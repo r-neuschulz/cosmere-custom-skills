@@ -205,6 +205,12 @@ class CustomSkillsMenu extends HandlebarsApplicationMixin(ApplicationV2) {
         const expanded = foundry.utils.expandObject(formData.object);
         const rows = expanded.skills ?? {};
 
+        // Skills we already own (from the saved setting). Anything already in
+        // `CONFIG.COSMERE.skills` that is NOT one of these is a built-in (or another
+        // module's) skill and must not be overwritten. We cannot rely on a `source`
+        // field here: the system's registerSkill does not persist one.
+        const ownIds = new Set(getCustomSkills().map((s) => s.id));
+
         const cleaned = [];
         const seen = new Set();
         for (const key of Object.keys(rows).sort((a, b) => Number(a) - Number(b))) {
@@ -217,35 +223,40 @@ class CustomSkillsMenu extends HandlebarsApplicationMixin(ApplicationV2) {
             // Drop entirely-empty rows silently.
             if (!id && !label && !attribute) continue;
 
+            // Validation errors are THROWN, not returned: Foundry's form handler only
+            // keeps the window open (and preserves the user's edits) when the handler
+            // rejects. The thrown message is surfaced via ui.notifications by core.
             if (!label) {
-                ui.notifications.error(game.i18n.localize('COSMERE-CUSTOM-SKILLS.Errors.MissingLabel'));
-                return;
+                throw new Error(game.i18n.localize('COSMERE-CUSTOM-SKILLS.Errors.MissingLabel'));
             }
             if (!id) {
-                ui.notifications.error(game.i18n.localize('COSMERE-CUSTOM-SKILLS.Errors.MissingId'));
-                return;
+                throw new Error(game.i18n.localize('COSMERE-CUSTOM-SKILLS.Errors.MissingId'));
+            }
+            // The id becomes a config key AND a DataModel schema field name, so it must
+            // be a plain identifier (dots would be read as nested paths by Foundry).
+            if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(id)) {
+                throw new Error(game.i18n.format('COSMERE-CUSTOM-SKILLS.Errors.InvalidId', { id }));
             }
             if (!attribute || !CONFIG.COSMERE.attributes[attribute]) {
-                ui.notifications.error(
-                    game.i18n.format('COSMERE-CUSTOM-SKILLS.Errors.MissingAttribute', { label }),
-                );
-                return;
+                throw new Error(game.i18n.format('COSMERE-CUSTOM-SKILLS.Errors.MissingAttribute', { label }));
             }
-            if (CONFIG.COSMERE.skills[id] && CONFIG.COSMERE.skills[id].source !== MODULE_ID) {
-                ui.notifications.error(
-                    game.i18n.format('COSMERE-CUSTOM-SKILLS.Errors.ReservedId', { id }),
-                );
-                return;
+            if (CONFIG.COSMERE.skills[id] && !ownIds.has(id)) {
+                throw new Error(game.i18n.format('COSMERE-CUSTOM-SKILLS.Errors.ReservedId', { id }));
             }
             if (seen.has(id)) {
-                ui.notifications.error(
-                    game.i18n.format('COSMERE-CUSTOM-SKILLS.Errors.DuplicateId', { id }),
-                );
-                return;
+                throw new Error(game.i18n.format('COSMERE-CUSTOM-SKILLS.Errors.DuplicateId', { id }));
             }
             seen.add(id);
             cleaned.push({ id, label, attribute });
         }
+
+        // No-op if nothing actually changed, so we don't nag for a world reload.
+        const current = getCustomSkills().map((s) => ({
+            id: s.id,
+            label: s.label,
+            attribute: s.attribute,
+        }));
+        if (JSON.stringify(current) === JSON.stringify(cleaned)) return;
 
         await game.settings.set(MODULE_ID, SETTING, cleaned);
 

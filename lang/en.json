@@ -22,6 +22,7 @@
         "Errors": {
             "MissingLabel": "Every custom skill needs a name.",
             "MissingId": "Could not derive an identifier from the name; please enter one manually (letters/numbers only).",
+            "InvalidId": "The identifier \"{id}\" is invalid. Use only letters, numbers, and underscores, and do not start with a number.",
             "MissingAttribute": "Choose an attribute for the skill \"{label}\".",
             "ReservedId": "The identifier \"{id}\" is already used by a built-in skill. Choose another.",
             "DuplicateId": "The identifier \"{id}\" is used more than once. Identifiers must be unique."
