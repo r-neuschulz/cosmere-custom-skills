@@ -32,10 +32,17 @@ actor.
 **Manifest URL:**
 
 ```
-https://raw.githubusercontent.com/r-neuschulz/cosmere-custom-skills/main/module.json
+https://github.com/r-neuschulz/cosmere-custom-skills/releases/latest/download/module.json
 ```
 
 In Foundry: *Add-on Modules → Install Module* and paste the manifest URL.
+
+## Releasing (maintainers)
+
+Releases are automated by [`.github/workflows/release.yml`](.github/workflows/release.yml).
+Bump `version` in `module.json`, commit, and push to `main`. CI tags `v<version>`,
+builds `module.zip`, injects the release URLs, and publishes the GitHub release with
+`module.json` + `module.zip` attached. Re-pushing an already-released version is a no-op.
 
 ## Compatibility
 
