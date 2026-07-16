@@ -1,0 +1,62 @@
+<div class="cosmere-custom-skills-menu">
+    <p class="notes">{{localize "COSMERE-CUSTOM-SKILLS.Menu.Intro"}}</p>
+
+    <div class="skills-table">
+        <div class="skills-row skills-header">
+            <div class="col-label">{{localize "COSMERE-CUSTOM-SKILLS.Fields.Label"}}</div>
+            <div class="col-id">{{localize "COSMERE-CUSTOM-SKILLS.Fields.Id"}}</div>
+            <div class="col-attribute">{{localize "COSMERE-CUSTOM-SKILLS.Fields.Attribute"}}</div>
+            <div class="col-actions"></div>
+        </div>
+
+        {{#each skills as |skill|}}
+        <div class="skills-row">
+            <div class="col-label">
+                <input type="text" name="skills.{{skill.index}}.label"
+                       value="{{skill.label}}"
+                       placeholder="{{localize 'COSMERE-CUSTOM-SKILLS.Fields.LabelPlaceholder'}}">
+            </div>
+            <div class="col-id">
+                <input type="text" name="skills.{{skill.index}}.id"
+                       value="{{skill.id}}"
+                       placeholder="{{localize 'COSMERE-CUSTOM-SKILLS.Fields.IdPlaceholder'}}">
+            </div>
+            <div class="col-attribute">
+                <select name="skills.{{skill.index}}.attribute">
+                    <option value="">{{localize "COSMERE-CUSTOM-SKILLS.Fields.AttributePlaceholder"}}</option>
+                    {{#each skill.optionGroups as |group|}}
+                    <optgroup label="{{group.label}}">
+                        {{#each group.options as |option|}}
+                        <option value="{{option.key}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                        {{/each}}
+                    </optgroup>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col-actions">
+                <button type="button" class="icon-button" data-action="deleteSkill"
+                        data-index="{{skill.index}}"
+                        data-tooltip="{{localize 'COSMERE-CUSTOM-SKILLS.Menu.Delete'}}">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+        {{/each}}
+
+        {{#unless hasSkills}}
+        <div class="skills-row skills-empty">
+            <p>{{localize "COSMERE-CUSTOM-SKILLS.Menu.Empty"}}</p>
+        </div>
+        {{/unless}}
+    </div>
+
+    <button type="button" class="add-skill" data-action="addSkill">
+        <i class="fa-solid fa-plus"></i> {{localize "COSMERE-CUSTOM-SKILLS.Menu.Add"}}
+    </button>
+
+    <footer class="form-footer">
+        <button type="submit">
+            <i class="fa-solid fa-floppy-disk"></i> {{localize "COSMERE-CUSTOM-SKILLS.Menu.Save"}}
+        </button>
+    </footer>
+</div>

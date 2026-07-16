@@ -1,0 +1,46 @@
+{
+    "id": "cosmere-custom-skills",
+    "title": "Cosmere RPG - Custom Skills",
+    "description": "Adds custom roll-skills (e.g. the Spiritual skill \"Desperation\") to Cosmere RPG character sheets. Skills are managed globally by the GM from the module settings in Game Settings and appear on every character sheet under their chosen attribute.",
+    "version": "1.0.1",
+    "compatibility": {
+        "minimum": "13",
+        "verified": "13.351"
+    },
+    "authors": [
+        {
+            "name": "r-neuschulz",
+            "url": "https://github.com/r-neuschulz"
+        }
+    ],
+    "url": "https://github.com/r-neuschulz/cosmere-custom-skills",
+    "manifest": "https://raw.githubusercontent.com/r-neuschulz/cosmere-custom-skills/main/module.json",
+    "download": "https://github.com/r-neuschulz/cosmere-custom-skills/releases/latest/download/module.zip",
+    "readme": "https://github.com/r-neuschulz/cosmere-custom-skills/blob/main/README.md",
+    "bugs": "https://github.com/r-neuschulz/cosmere-custom-skills/issues",
+    "esmodules": [
+        "scripts/module.js"
+    ],
+    "styles": [
+        "styles/module.css"
+    ],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        }
+    ],
+    "relationships": {
+        "systems": [
+            {
+                "id": "cosmere-rpg",
+                "type": "system",
+                "compatibility": {
+                    "minimum": "2.1.0"
+                }
+            }
+        ]
+    },
+    "library": false
+}
